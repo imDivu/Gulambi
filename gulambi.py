@@ -28,8 +28,8 @@ logging.basicConfig(
         datefmt='%m/%d/%Y, %H:%M:%S',
         handlers=[logging.FileHandler('gulambi.log'), logging.StreamHandler()],
 )
-LOGS = logging.getLogger('[Gulambi]')
-LOGS.info(
+LOG = logging.getLogger('[Gulambi]')
+LOG.info(
 """
                     -----------------------------------
                             Starting Deployment
@@ -57,7 +57,7 @@ with TelegramClient(StringSession(SESSION), API_ID, API_HASH) as client:
                 for result in results:
                      await event.respond(result)
             except YouBlockedUserError:
-                return LOGS.info('You Blocked @GulambiRobot - Kindly /start @GulambiRobot.')
+                return LOG.warning('You Blocked @GulambiRobot - Kindly /start @GulambiRobot.')
             except Timeout:
                 return
 
@@ -68,12 +68,13 @@ with TelegramClient(StringSession(SESSION), API_ID, API_HASH) as client:
            'guessed correctly.' in event.raw_text.lower() and '💵' in event.raw_text):
             await event.respond('/guess')
             try:
-                response = await conv.wait_event(events.NewMessage(from_users=['GulambiRobot'], chats=CHATS, photo=True), timeout=15)
+                async with event.client.conversation('GulambiRobot') as conv:
+                   await conv.wait_event(events.NewMessage(from_users=['GulambiRobot'], chats=CHATS, photo=True), timeout=15)
             except Timeout:
                 await sendguess(event)
 
 
-    LOGS.info('Gulambi has been deployed!....\n....')
-    LOGS.info('Made With ❤\n....')
-    LOGS.info('© @AssKetchum - (@GulambiRobot)')
+    LOG.info('Gulambi has been deployed!....\n....')
+    LOG.info('Made With ❤\n....')
+    LOG.info('© @AssKetchum - (@GulambiRobot)')
     client.run_until_disconnected()
