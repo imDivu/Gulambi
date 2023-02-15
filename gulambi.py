@@ -59,7 +59,7 @@ with TelegramClient(StringSession(SESSION), API_ID, API_HASH) as client:
             except YouBlockedUserError:
                 return LOG.warning('You Blocked @GulambiRobot - Kindly /start @GulambiRobot.')
             except Timeout:
-                return
+                retur
 
 
     @client.on(events.NewMessage(from_users=[572621020], chats=CHATS))
